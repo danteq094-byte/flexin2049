@@ -2,151 +2,64 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flexin2048 - Game Downloader</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #400000;
-            font-family: 'Segoe UI', sans-serif;
-            overflow: hidden;
-            color: white;
+            margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center;
+            background: radial-gradient(circle, #800000 0%, #300000 100%);
+            font-family: 'Arial Black', sans-serif; overflow: hidden; color: white;
         }
 
-        /* Fondo Animado de Ondas */
-        .background {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #600000, #ff0000, #200000);
-            background-size: 400% 400%;
-            animation: waves 12s ease infinite;
-            z-index: -1;
+        .card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 50px; border-radius: 50px;
+            border: 3px solid #ff0000; text-align: center;
+            width: 400px; box-shadow: 0 0 50px rgba(255, 0, 0, 0.4);
         }
 
-        @keyframes waves {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Contenedor principal redondo */
-        .container {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(15px);
-            padding: 60px;
-            border-radius: 60px; /* Bordes muy redondos */
-            border: 2px solid rgba(255, 0, 0, 0.4);
-            text-align: center;
-            width: 450px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-        }
-
-        h1 {
-            font-size: 32px;
-            color: #ff3333;
-            font-style: italic;
-            text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(255,0,0,0.7);
-            margin-bottom: 5px;
-        }
-
-        h2 {
-            font-size: 14px;
-            color: #ff9999;
-            letter-spacing: 3px;
-            margin-bottom: 40px;
-        }
+        h1 { color: #ff3333; font-style: italic; margin-bottom: 5px; text-shadow: 0 0 10px #ff0000; }
+        h2 { font-size: 12px; color: #ff9999; margin-bottom: 30px; letter-spacing: 2px; }
 
         input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #ff0000;
-            border-radius: 15px;
-            color: white;
-            font-size: 18px;
-            text-align: center;
-            outline: none;
-            margin-bottom: 25px;
-            transition: 0.3s;
+            width: 90%; padding: 15px; border-radius: 15px; border: 2px solid #ff0000;
+            background: #200000; color: white; font-size: 18px; text-align: center; outline: none;
         }
 
-        input:focus { border-color: #00ff00; box-shadow: 0 0 15px #00ff00; }
-
-        /* Botón con animación y luz verde */
-        .btn-dl {
-            width: 100%;
-            padding: 20px;
-            background: #ff0000;
-            border: none;
-            border-radius: 40px;
-            color: white;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            box-shadow: 0 5px 15px rgba(255,0,0,0.4);
+        button {
+            width: 100%; padding: 20px; border-radius: 40px; border: none;
+            background: #ff0000; color: white; font-size: 20px; font-weight: bold;
+            cursor: pointer; transition: 0.3s; margin-top: 20px;
         }
 
-        .btn-dl:hover {
-            transform: scale(1.08); /* Se agranda un poco */
+        /* Tu efecto de luz verde y agrandado */
+        button:hover {
+            transform: scale(1.1);
             background: #cc0000;
-            box-shadow: 0 0 35px #00ff44; /* Luz verde potente */
+            box-shadow: 0 0 40px #00ff00; /* Luz verde neón */
         }
 
-        #status {
-            margin-top: 25px;
-            font-size: 14px;
-            color: #ffcccc;
-            opacity: 0.8;
-        }
-
-        .footer {
-            margin-top: 40px;
-            font-size: 11px;
-            opacity: 0.4;
-        }
+        #status { margin-top: 20px; font-size: 14px; color: #ffcccc; }
     </style>
 </head>
 <body>
-    <div class="background"></div>
-    <div class="container">
-        <h1>Flexin2048 - Game Downloader</h1>
+    <div class="card">
+        <h1>Flexin2048 - Downloader</h1>
         <h2>BY FLEXIN2048</h2>
-
-        <input type="text" id="gameId" placeholder="Insert Place ID">
-        <button class="btn-dl" onclick="startDownload()">DOWNLOAD RBXM</button>
-
-        <div id="status">Ready to download...</div>
-
-        <div class="footer">© 2024 FLEXIN2048. ALL RIGHTS RESERVED</div>
+        <input type="text" id="gameId" placeholder="Insert Game ID">
+        <button onclick="download()">DOWNLOAD RBXM</button>
+        <div id="status">Waiting for ID...</div>
     </div>
 
     <script>
-        function startDownload() {
+        function download() {
             const id = document.getElementById('gameId').value.trim();
             const status = document.getElementById('status');
-
-            if (!id) {
-                status.innerText = "Error: Please enter a Place ID";
-                return;
-            }
-
-            status.innerText = "Processing ID and fetching name...";
+            if(!id) return status.innerText = "Put an ID first!";
             
-            // Redirección directa para activar la descarga
-            window.location.href = `/api/download?id=${id}`;
-
-            // Mensaje de feedback tras unos segundos
-            setTimeout(() => {
-                status.innerText = "If download didn't start, check if the game is Uncopylocked.";
-            }, 3000);
+            status.innerText = "Downloading...";
+            // Usamos ruta relativa para evitar el error 404
+            window.location.href = `api/download?id=${id}`;
         }
     </script>
 </body>
